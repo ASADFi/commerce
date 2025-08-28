@@ -1,4 +1,4 @@
-import { getCollection, getCollectionProducts } from 'lib/shopify';
+import { getCollection, getCollectionProducts } from 'lib/api';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -29,7 +29,8 @@ export default async function CategoryPage(props: {
   const params = await props.params;
   const { sort } = searchParams as { [key: string]: string };
   const { sortKey, reverse } = sorting.find((item) => item.slug === sort) || defaultSort;
-  const products = await getCollectionProducts({ collection: params.collection, sortKey, reverse });
+  const productsResponse = await getCollectionProducts(params.collection, { limit: 50 });
+  const products = productsResponse.data || [];
 
   return (
     <section>
